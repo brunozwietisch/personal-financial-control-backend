@@ -4,7 +4,25 @@ const jwt = require('jsonwebtoken');
 // Models
 const User = require("../models/User");
 
+// Helpers
+const getUserByToken = require('../helpers/get-user-by-token');
+const getToken = require('../helpers/get-token');
+
 module.exports = class UserController {
+  static async getUser(req, res) {
+    const id = req.params.id;
+    const user = await User.findById(id);
+
+    if(!user) {
+      res.status(422).json({ message: 'Usuário não encontrado!' });
+      return;
+    }
+
+    user.password = undefined;
+
+    res.status(200).json({ user });
+  }
+
   static async store(req, res) {
     const { name, email, password, confirmpassword } = req.body;
 
@@ -63,16 +81,57 @@ module.exports = class UserController {
     }
   }
 
-  static async getUser(req, res) {
-    const id = req.params.id
-    const user = await User.findById(id)
+  static async update(req, res) {
+    const token = getToken(req);
+    const user = await getUserByToken(token);
 
-    if(!user) {
-      res.status(422).json({ message: 'Usuário não encontrado!' })
+    const {
+      name,
+      email
+    } = req.body;
+
+    if(!name) {
+      res.status(422).json({
+        message: "O nome é obrigatório!"
+      })
       return
     }
 
-    res.status(200).json({ user })
+    user.name = name;
 
+    if(!email) {
+      res.status(422).json({
+        message: "O e-mail é obrigatório"
+      })
+      return
+    }
+
+    const userExists = await User.findOne({
+      email: email
+    })
+
+    if(user.email !== email && userExists) {
+      res.status(422).json({
+        message: "Por favor, utilize outro e-mail!"
+      })
+      return
+    }
+
+    user.email = email
+
+    try {
+      const updateUser = await User.findOneAndUpdate(
+        { _id: user.id },
+        { $set: user },
+        { new: true }
+      )
+
+      res.json({
+        message: "Usuário atualizado com sucesso",
+        data: updateUser
+      })
+    } catch (error) {
+      res.status(500).json({message:error})
+    }   
   }
 };

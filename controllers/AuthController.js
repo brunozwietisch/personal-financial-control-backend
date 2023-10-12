@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 
 // Models
 const User = require("../models/User");
@@ -15,19 +15,18 @@ const createUserToken = require('../helpers/create-user-token');
 module.exports = class AuthController {
     static async login(req, res) {
       const { email, password } = req.body;
-  
+
       if (!email) {
         res.status(422).json({ message: "O e-mail é obrigatório!" });
         return;
       }
-  
+
       if (!password) {
         res.status(422).json({ message: "A senha é obrigatória!" });
         return;
       }
-  
+
       const user = await User.findOne({ email: email });
-  
       if (!user) {
         return res
           .status(422)
@@ -35,18 +34,18 @@ module.exports = class AuthController {
             message: "Não há usuário com este e-mail!",
           });
       }
-  
-      const checkPassword = await bcrypt.compare(password, user.password)
-  
+
+      const checkPassword = await bcrypt.compare(password, user.password);
+
       if(!checkPassword) {
-        return res.status(422).json({ message: 'Senha invalida' })
+        return res.status(422).json({ message: 'Senha invalida' });
       }
-  
-      await createUserToken(user, req, res)
+
+      await createUserToken(user, req, res);
     }
 
     static async checkValidation(req, res) {
-        let currentUser
+        let currentUser;
 
         if(req.headers.authorization) {
             const token = getToken(req);
@@ -54,11 +53,11 @@ module.exports = class AuthController {
 
             currentUser = await User.findById(decoded.id);
 
-            currentUser.password = undefined
+            currentUser.password = undefined;
         } else {
-            currentUser = null
+            currentUser = null;
         }
 
-        res.status(200).send(currentUser)
+        res.status(200).send(currentUser);
     }
 }
