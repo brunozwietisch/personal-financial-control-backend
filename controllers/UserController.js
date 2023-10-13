@@ -1,20 +1,21 @@
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 // Models
 const User = require("../models/User");
 
 // Helpers
-const getUserByToken = require('../helpers/get-user-by-token');
-const getToken = require('../helpers/get-token');
+const getUserByToken = require("../helpers/get-user-by-token");
+const createUserToken = require("../helpers/create-user-token");
+const getToken = require("../helpers/get-token");
 
 module.exports = class UserController {
   static async getUser(req, res) {
     const id = req.params.id;
     const user = await User.findById(id);
 
-    if(!user) {
-      res.status(422).json({ message: 'Usuário não encontrado!' });
+    if (!user) {
+      res.status(422).json({ message: "Usuário não encontrado!" });
       return;
     }
 
@@ -56,15 +57,12 @@ module.exports = class UserController {
     }
 
     const userExists = await User.findOne({
-      email: email
-    })
-    console.log(userExists)
-    return;
+      email: email,
+    });
 
-
-    if (userExist) {
+    if (userExists) {
       res.status(422).json({ message: "Por favor, utilize outro e-mail!" });
-      return
+      return;
     }
 
     const salt = await bcrypt.genSalt(12);
@@ -77,15 +75,12 @@ module.exports = class UserController {
     });
 
     try {
-      // const newUser = await user.save();
-
-      // console.log(newUser)
-
-      // await createUserToken(newUser, req, res);
-
-      // res.status(200).json({ message: "Usuário cadastrado com sucesso" });
+      const newUser = await user.save();
+      await createUserToken(newUser, req, res);
+      res.status(200).json({ message: "Usuário cadastrado com sucesso" });
     } catch (error) {
-      res.status(500).json({ message: error });
+      console.error(error);
+      res.status(500).json({ message: error.message });
     }
   }
 
@@ -93,53 +88,102 @@ module.exports = class UserController {
     const token = getToken(req);
     const user = await getUserByToken(token);
 
-    const {
-      name,
-      email
-    } = req.body;
+    const { name, email } = req.body;
 
-    if(!name) {
+    if (!name) {
       res.status(422).json({
-        message: "O nome é obrigatório!"
-      })
-      return
+        message: "O nome é obrigatório!",
+      });
+      return;
     }
 
     user.name = name;
 
-    if(!email) {
+    if (!email) {
       res.status(422).json({
-        message: "O e-mail é obrigatório"
-      })
-      return
+        message: "O e-mail é obrigatório",
+      });
+      return;
     }
 
     const userExists = await User.findOne({
-      email: email
-    })
+      email: email,
+    });
 
-    if(user.email !== email && userExists) {
+    if (user.email !== email && userExists) {
       res.status(422).json({
-        message: "Por favor, utilize outro e-mail!"
-      })
-      return
+        message: "Por favor, utilize outro e-mail!",
+      });
+      return;
     }
 
-    user.email = email
+    user.email = email;
 
     try {
       const updateUser = await User.findOneAndUpdate(
         { _id: user.id },
         { $set: user },
         { new: true }
-      )
+      );
 
       res.json({
         message: "Usuário atualizado com sucesso",
-        data: updateUser
-      })
+        data: updateUser,
+      });
     } catch (error) {
-      res.status(500).json({message:error})
-    }   
+      res.status(500).json({ message: error });
+    }
   }
+
+  static async changePassword(req, res) {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      res.status(422).json({ message: "Usuário não encontrado!" });
+      return;
+    }
+
+    const { password, confirmpassword } = req.body;
+
+    if (!password) {
+      res.status(422).json({ message: "Senha obrigatória" });
+      
+      return;
+    }
+
+    if (password != confirmpassword) {
+      res.status(422).json({ error: "As senhas não conferem." });
+
+    } else if (password == confirmpassword && password != null) {
+      const salt = await bcrypt.genSalt(12);
+      const reqPassword = req.body.password;
+
+      const passwordHash = await bcrypt.hash(reqPassword, salt);
+
+      user.password = passwordHash;
+
+      try {
+        const updatedUser = await User.findOneAndUpdate(
+          { _id: user._id },
+          { $set: user },
+          { new: true },
+        )
+        res.json({
+          message: 'Usuário atualizado com sucesso!',
+          data: updatedUser,
+        })
+      } catch (error) {
+        res.status(500).json({ message: error })
+      }
+    } else {
+      res.status(422).json({ error: "Erro ao atualizar" });
+    }
+
+
+    
+  }
+
+  static async inativeUser(req, res) {}
 };

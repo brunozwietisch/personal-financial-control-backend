@@ -8,13 +8,14 @@ async function main() {
         useUnifiedTopology: true,
     });
 
-    // Remove todos os documentos de todas as coleções do banco de dados
-    const collections = mongoose.connection.collections;
-    for (const key in collections) {
-        await collections[key].deleteMany({});
+    if(APP_ENV === 'test'){
+        const collections = mongoose.connection.collections;
+        for (const key in collections) {
+            await collections[key].deleteMany({});
+        }
     }
 
-    console.log('Conectou com o Mongoose e limpou o banco de dados');
+    console.log('Conectou com o Mongoose');
 }
 
 main().catch((err) => console.log(err));
