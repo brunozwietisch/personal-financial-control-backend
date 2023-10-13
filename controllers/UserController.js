@@ -55,10 +55,16 @@ module.exports = class UserController {
       return;
     }
 
-    const userExist = await User.findOne({ email: email });
+    const userExists = await User.findOne({
+      email: email
+    })
+    console.log(userExists)
+    return;
+
 
     if (userExist) {
       res.status(422).json({ message: "Por favor, utilize outro e-mail!" });
+      return
     }
 
     const salt = await bcrypt.genSalt(12);
@@ -71,11 +77,13 @@ module.exports = class UserController {
     });
 
     try {
-      const newUser = await user.save();
+      // const newUser = await user.save();
 
-      await createUserToken(newUser, req, res);
+      // console.log(newUser)
 
-      res.status(200).json({ message: "Usuário cadastrado com sucesso" });
+      // await createUserToken(newUser, req, res);
+
+      // res.status(200).json({ message: "Usuário cadastrado com sucesso" });
     } catch (error) {
       res.status(500).json({ message: error });
     }
