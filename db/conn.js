@@ -1,23 +1,15 @@
-const mongoose = require('mongoose');
-const { APP_ENV } = require('../helpers/constants');
+const { Sequelize } = require('sequelize')
 
-async function main() {
-    // Conecta-se ao banco de dados MongoDB
-    await mongoose.connect('mongodb://localhost:27017/financialcontrol', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
+const sequelize = new Sequelize('financialcontrol', 'root', '12345678', {
+  host: 'localhost',
+  dialect: 'mysql',
+})
 
-    if(APP_ENV === 'test'){
-        const collections = mongoose.connection.collections;
-        for (const key in collections) {
-            await collections[key].deleteMany({});
-        }
-    }
-
-    console.log('Conectou com o Mongoose');
+try {
+  sequelize.authenticate()
+  console.log('Conectamos com o Sequelize!')
+} catch (error) {
+  console.error('Não foi possível conectar:', error)
 }
 
-main().catch((err) => console.log(err));
-
-module.exports = mongoose;
+module.exports = sequelize
