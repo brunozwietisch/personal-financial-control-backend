@@ -20,6 +20,7 @@ At the moment, the project consists of four main modules:
    - Permission Registration
    - Category (Module) Registration
    - Editing
+   - Permissions Search
 
 4. **Financial Flow**
    - Balance Entry
@@ -31,7 +32,7 @@ As the project evolves, more modules will be added.
 
 ## Technologies Used
 
-The technologies used in this project are MongoDB, Node.js, and TypeScript.
+The technologies used in this project are MySql, Node.js, and TypeScript.
 
 ## Contact
 
