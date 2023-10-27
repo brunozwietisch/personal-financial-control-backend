@@ -9,7 +9,7 @@ const CashFlowEntry = db.define(
       allowNull: false,
     },
     amount: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.DECIMAL(10, 2),
     },
     date_entry: {
       type: DataTypes.DATE,

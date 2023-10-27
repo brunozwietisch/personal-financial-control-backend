@@ -16,6 +16,7 @@ const userRoutes = require("./routes/UserRoutes");
 const authRoutes = require("./routes/AuthRoutes");
 const CashFlowEntryRoutes = require("./routes/CashFlowEntryRoutes");
 const CashFlowExitRoutes = require("./routes/CashFlowExitRoutes");
+const RecurrenceRoutes = require("./routes/RecurrenceRoutes");
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);

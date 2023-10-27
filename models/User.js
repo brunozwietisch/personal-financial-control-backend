@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
 const User = db.define(
-  "Users",
+  "users",
   {
     name: {
       type: DataTypes.STRING,
