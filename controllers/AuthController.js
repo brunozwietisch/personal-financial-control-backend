@@ -4,13 +4,10 @@ const dotenv = require('dotenv');
 // Models
 const User = require("../models/User");
 
-// Configs
-dotenv.config();
-const TOKEN_SECRET = process.env.TOKEN_SECRET;
-
 // Helpers
 const getToken = require('../helpers/get-token');
 const createUserToken = require('../helpers/create-user-token');
+const { TOKEN_SECRET } = require('../helpers/constants');
 
 module.exports = class AuthController {
     static async login(req, res) {
@@ -26,7 +23,10 @@ module.exports = class AuthController {
         return;
       }
 
-      const user = await User.findOne({ email: email });
+      const user = await User.findOne({
+        where: { email: email },
+      });
+
       if (!user) {
         return res
           .status(422)
@@ -51,7 +51,9 @@ module.exports = class AuthController {
             const token = getToken(req);
             const decoded = jwt.verify(token, TOKEN_SECRET);
 
-            currentUser = await User.findById(decoded.id);
+            currentUser = await User.findByPk(id, {
+              attributes: { exclude: ["password"] },
+            });
 
             currentUser.password = undefined;
         } else {

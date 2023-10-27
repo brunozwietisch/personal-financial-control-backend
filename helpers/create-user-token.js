@@ -4,8 +4,8 @@ const { TOKEN_SECRET } = require('../helpers/constants');
 const createUserToken = async (user, req, res) => {
     const token = jwt.sign(
         {
-            name: user.name,
-            id: user._id
+            id: user.id,
+            name: user.name
         },
         `${TOKEN_SECRET}`
     );
