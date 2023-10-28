@@ -15,14 +15,20 @@ app.use(express.static("public"));
 const userRoutes = require("./routes/UserRoutes");
 const authRoutes = require("./routes/AuthRoutes");
 const CashFlowEntryRoutes = require("./routes/CashFlowEntryRoutes");
-const CashFlowExitRoutes = require("./routes/CashFlowExitRoutes");
+const CashFlowOutflowRoutes = require("./routes/CashFlowOutflowRoutes");
 const RecurrenceRoutes = require("./routes/RecurrenceRoutes");
+const CategoryRoutes = require("./routes/CategoryRoutes");
+const PaymentMethodRoutes = require("./routes/PaymentMethodRoutes");
+const SourceRoutes = require("./routes/SourceRoutes");
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-app.use("/cashflowentry", CashFlowEntryRoutes);
-app.use("/cashflowexit", CashFlowExitRoutes);
-app.use("/recurrence", RecurrenceRoutes);
+app.use("/cashflowentries", CashFlowEntryRoutes);
+app.use("/cashflowoutflows", CashFlowOutflowRoutes);
+app.use("/recurrences", RecurrenceRoutes);
+app.use("/categories", CategoryRoutes);
+app.use("/paymentmethods", PaymentMethodRoutes);
+app.use("/sources", SourceRoutes);
 
 conn
   .sync()

@@ -1,10 +1,15 @@
-const { db } = require("./conn");
+const db = require("../db/conn");
 const path = require("path");
+
+// Seeders
+const UsersSeeders = require("./seeders/UsersSeeders")
 
 async function runSeeders() {
   try {
     // Execute os seeders
-    const seeders = [require("./seeders/UsersSeeders")];
+    const seeders = [
+      UsersSeeders,
+    ];
 
     for (const seeder of seeders) {
       await seeder.up();
@@ -12,7 +17,7 @@ async function runSeeders() {
 
     console.log("Seeders executados com sucesso.");
   } catch (error) {
-    console.error("Erro ao executar seeders:", error);
+    // console.error("Erro ao executar seeders:", error);
   } finally {
     await db.close();
   }

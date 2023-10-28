@@ -1,7 +1,7 @@
 // Models
-const CashFlowExit = require("../models/CashFlowExit");
+const PaymentMethod = require("../models/PaymentMethod");
 
-module.exports = class CashFlowExitController {
+module.exports = class PaymentMethodController {
   static async store(req, res) {
     const { name } = req.body;
 

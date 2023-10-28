@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
-const CashFlowExit = db.define(
-  "cash_flow_exits",
+module.exports = db.define(
+  "cash_flow_outflows",
   {
     description: {
       type: DataTypes.STRING,
@@ -48,5 +48,3 @@ const CashFlowExit = db.define(
     paranoid: true,
   }
 );
-
-module.exports = CashFlowExit;

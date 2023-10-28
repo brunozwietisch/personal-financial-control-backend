@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
 const CashFlowEntry = db.define(
-  "cash_flow_entrys",
+  "cash_flow_entries",
   {
     description: {
       type: DataTypes.STRING,
