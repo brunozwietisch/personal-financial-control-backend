@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
-module.exports = db.define(
+const CashFlowOutflow = db.define(
   "cash_flow_outflows",
   {
     description: {
@@ -48,3 +48,5 @@ module.exports = db.define(
     paranoid: true,
   }
 );
+
+module.exports = CashFlowOutflow;

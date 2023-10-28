@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
-module.exports = db.define(
+const PaymentMethod = db.define(
   "payment_methods",
   {
     name: {
@@ -10,9 +10,15 @@ module.exports = db.define(
     },
     description: {
       type: DataTypes.TEXT("long"),
-    }
+    },
+    icon: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     paranoid: true,
   }
 );
+
+module.exports = PaymentMethod;

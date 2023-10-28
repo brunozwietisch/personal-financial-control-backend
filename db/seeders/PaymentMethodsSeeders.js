@@ -1,10 +1,14 @@
-const User = require("../../models/User");
+const PaymentMethod = require("../../models/PaymentMethod");
 const bcrypt = require("bcrypt");
 
 const data = [
   {
-    name: "Bruno Fernando Zwietisch",
-    email: "brunozwietisch@gmail.com",
+    name: "Pix",
+    icon: "fa-brands fa-pix"
+  },
+  {
+    name: "Cartão de Crédito Nubank",
+    icon: "fa-brands fa-cc-visa"
   },
 ];
 
@@ -12,18 +16,16 @@ module.exports = {
   up: async () => {
     try {
       for (const record of data) {
-        const salt = await bcrypt.genSalt(12);
-        const password = await bcrypt.hash("12345678", salt);
-
-        const _user = new User({
+        const records = new PaymentMethod({
           name: record.name,
-          email: record.email,
-          password,
+          description: record.description,
+          color: record.color,
+          icon: record.icon,
         });
 
-        await _user.save();
+        await records.save();
 
-        console.log("Registro inserido com sucesso:", _user);
+        console.log("Registro inserido com sucesso:", records);
       }
     } catch (error) {
       console.error("Erro ao inserir os registros:", error);
@@ -32,9 +34,9 @@ module.exports = {
   down: async () => {
     try {
       for (const record of data) {
-        await User.destroy({
+        await PaymentMethod.destroy({
           where: {
-            email: record.email,
+            name: record.name,
           },
           force: true,
         });

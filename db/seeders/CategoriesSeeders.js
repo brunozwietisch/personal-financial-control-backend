@@ -1,10 +1,18 @@
-const User = require("../../models/User");
+const Category = require("../../models/Category");
 const bcrypt = require("bcrypt");
 
 const data = [
   {
-    name: "Bruno Fernando Zwietisch",
-    email: "brunozwietisch@gmail.com",
+    name: "Salario Mensal CLT",
+    type: "entry",
+    color: "#8AF075",
+    icon: "fas fa-money-bill-wave-alt",
+  },
+  {
+    name: "Alguel",
+    type: "exit",
+    color: "#E05B4F",
+    icon: "fas fa-home",
   },
 ];
 
@@ -12,18 +20,16 @@ module.exports = {
   up: async () => {
     try {
       for (const record of data) {
-        const salt = await bcrypt.genSalt(12);
-        const password = await bcrypt.hash("12345678", salt);
-
-        const _user = new User({
+        const records = new Category({
           name: record.name,
-          email: record.email,
-          password,
+          description: record.description,
+          color: record.color,
+          icon: record.icon,
         });
 
-        await _user.save();
+        await records.save();
 
-        console.log("Registro inserido com sucesso:", _user);
+        console.log("Registro inserido com sucesso:", records);
       }
     } catch (error) {
       console.error("Erro ao inserir os registros:", error);
@@ -32,9 +38,9 @@ module.exports = {
   down: async () => {
     try {
       for (const record of data) {
-        await User.destroy({
+        await Category.destroy({
           where: {
-            email: record.email,
+            name: record.name,
           },
           force: true,
         });

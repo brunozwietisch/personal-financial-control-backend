@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
-module.exports = db.define(
+const Source = db.define(
   "sources",
   {
     name: {
@@ -10,9 +10,12 @@ module.exports = db.define(
     },
     description: {
       type: DataTypes.TEXT("long"),
-    }
+      allowNull: true,
+    },
   },
   {
     paranoid: true,
   }
 );
+
+module.exports = Source;

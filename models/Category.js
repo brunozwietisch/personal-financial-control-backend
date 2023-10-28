@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conn");
 
-module.exports = db.define(
+const Category = db.define(
   "categories",
   {
     name: {
@@ -10,16 +10,23 @@ module.exports = db.define(
     },
     description: {
       type: DataTypes.TEXT("long"),
+      allowNull: true,
+    },
+    type: {
+      type: DataTypes.ENUM(["entry", "exit", "investment"]),
     },
     color: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     icon: {
       type: DataTypes.STRING,
-      allowNull: false,
-    }
+      allowNull: true,
+    },
   },
   {
     paranoid: true,
   }
 );
+
+module.exports = Category;
